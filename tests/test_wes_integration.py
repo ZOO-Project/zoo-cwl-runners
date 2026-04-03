@@ -4,8 +4,8 @@ import pytest
 
 pytestmark = pytest.mark.integration
 
-_zoo_wes_runner = pytest.importorskip("zoo_wes_runner")
-ZooWESRunner = _zoo_wes_runner.wes_runner.ZooWESRunner
+_zoo_wes_runner_mod = pytest.importorskip("zoo_wes_runner.wes_runner")
+ZooWESRunner = _zoo_wes_runner_mod.ZooWESRunner
 
 DUMMY_CWL = {
     "cwlVersion": "v1.2",

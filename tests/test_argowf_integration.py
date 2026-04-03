@@ -4,8 +4,8 @@ import pytest
 
 pytestmark = pytest.mark.integration
 
-_zoo_argowf_runner = pytest.importorskip("zoo_argowf_runner")
-ZooArgoWorkflowsRunner = _zoo_argowf_runner.runner.ZooArgoWorkflowsRunner
+_zoo_argowf_runner_runner = pytest.importorskip("zoo_argowf_runner.runner")
+ZooArgoWorkflowsRunner = _zoo_argowf_runner_runner.ZooArgoWorkflowsRunner
 
 DUMMY_CWL = {
     "cwlVersion": "v1.0",
