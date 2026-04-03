@@ -1,28 +1,42 @@
-# at the top of each of the four files
-import pytest
-pytestmark = pytest.mark.integration
-
-
-import sys
 import os
 
-# Add zoo-wes-runner path to sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../zoo-wes-runner")))
+import pytest
 
-from zoo_wes_runner.wes_runner import ZooWESRunner
+pytestmark = pytest.mark.integration
 
-# Set required environment variables
-os.environ["WES_USER"] = "dummy_user"
-os.environ["WES_PASSWORD"] = "dummy_password"
-os.environ["WES_URL"] = "https://dummy-url.com"
+_zoo_wes_runner = pytest.importorskip("zoo_wes_runner")
+ZooWESRunner = _zoo_wes_runner.wes_runner.ZooWESRunner
 
-conf = {"lenv": {"Identifier": "demo", "usid": "1234", "cwd": "."}}
-inputs = {}
-outputs = {}
+DUMMY_CWL = {
+    "cwlVersion": "v1.2",
+    "$graph": [
+        {
+            "class": "Workflow",
+            "id": "#main",
+            "inputs": [],
+            "outputs": [],
+            "steps": [],
+        }
+    ],
+}
 
-try:
-    runner = ZooWESRunner(conf=conf, inputs=inputs, outputs=outputs)
-    print("✅ ZooWESRunner initialized successfully!")
-except Exception as e:
-    print("❌ Error during WES initialization:", e)
+DUMMY_CONF = {
+    "lenv": {
+        "Identifier": "main",
+        "usid": "1234",
+        "cwd": ".",
+        "message": "",
+    },
+}
 
+
+@pytest.fixture(autouse=True)
+def wes_env_vars():
+    os.environ["WES_USER"] = "dummy_user"
+    os.environ["WES_PASSWORD"] = "dummy_password"
+    os.environ["WES_URL"] = "https://dummy-url.com"
+
+
+def test_wes_runner_instantiation():
+    runner = ZooWESRunner(cwl=DUMMY_CWL, conf=DUMMY_CONF, inputs={}, outputs={})
+    assert runner is not None

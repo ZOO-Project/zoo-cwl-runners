@@ -1,3 +1,4 @@
+import importlib
 import os
 import sys
 import argparse
@@ -23,27 +24,28 @@ def select_runner(runner_type: str) -> Type[Any]:
     without requiring runner deps to exist in the environment.
     """
     if runner_type == "calrissian":
-        # module name is the package published by the repo
         mod = importlib.import_module("zoo_calrissian_runner")
-        return ZooCalrissianRunner
+        return mod.ZooCalrissianRunner
     elif runner_type == "argowf":
         mod = importlib.import_module("zoo_argowf_runner.runner")
-        return ZooArgoWorkflowsRunner
+        return mod.ZooArgoWorkflowsRunner
     elif runner_type == "wes":
         mod = importlib.import_module("zoo_wes_runner.wes_runner")
-        return ZooWESRunner
+        return mod.ZooWESRunner
     raise ValueError(f"Unsupported runner type: {runner_type}")
 
 # Dummy execution handler for unit testing
 class DummyHandler:
     def pre_execution_hook(self): pass
-    def post_execution_hook(self, **kwargs): pass
+    def post_execution_hook(self, log, output, usage_report, tool_logs): pass
     def get_secrets(self): return None
     def get_additional_parameters(self): return {}
     def get_pod_env_vars(self): return None
     def get_pod_node_selector(self): return None
-    def handle_outputs(self, **kwargs): pass
+    def handle_outputs(self, log, output, usage_report, tool_logs): pass
     def set_job_id(self, job_id): pass
+    def get_namespace(self): return None
+    def get_service_account(self): return None
 
 
 

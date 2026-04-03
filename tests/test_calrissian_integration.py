@@ -1,35 +1,37 @@
-# at the top of each of the four files
 import pytest
+
 pytestmark = pytest.mark.integration
 
+ZooCalrissianRunner = pytest.importorskip("zoo_calrissian_runner").ZooCalrissianRunner
 
-import sys
-import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../zoo-calrissian-runner")))
-
-from zoo_calrissian_runner import ZooCalrissianRunner
-
-conf = {"lenv": {"Identifier": "demo", "usid": "1234", "cwd": "."}}
-inputs = {}
-outputs = {}
-
-# Minimal valid CWL for testing (will likely need to be improved based on loader)
-dummy_cwl_dict = {
-    "class": "Workflow",
-    "cwlVersion": "v1.0",
-    "inputs": {},
-    "outputs": {},
-    "steps": {}
+DUMMY_CWL = {
+    "cwlVersion": "v1.2",
+    "$graph": [
+        {
+            "class": "Workflow",
+            "id": "#main",
+            "inputs": [],
+            "outputs": [],
+            "steps": [],
+        }
+    ],
 }
 
-try:
-    runner = ZooCalrissianRunner(
-        cwl=dummy_cwl_dict,
-        conf=conf,
-        inputs=inputs,
-        outputs=outputs
-    )
-    print("✅ ZooCalrissianRunner initialized successfully!")
-except Exception as e:
-    print("❌ Error during initialization:", e)
+DUMMY_CONF = {
+    "lenv": {
+        "Identifier": "main",
+        "usid": "1234",
+        "cwd": ".",
+        "message": "",
+    },
+}
 
+
+def test_calrissian_runner_instantiation():
+    runner = ZooCalrissianRunner(
+        cwl=DUMMY_CWL,
+        conf=DUMMY_CONF,
+        inputs={},
+        outputs={},
+    )
+    assert runner is not None

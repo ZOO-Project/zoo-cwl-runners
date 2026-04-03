@@ -2,6 +2,10 @@ import json
 import subprocess
 import os
 
+import pytest
+
+pytestmark = pytest.mark.integration
+
 def test_calrissian_runner_invocation(tmp_path):
     # Dummy CWL Workflow JSON
     dummy_cwl = {
@@ -49,13 +53,10 @@ def test_calrissian_runner_invocation(tmp_path):
     os.environ["WRAPPER_STAGE_IN"] = os.path.join(zoo_calrissian_assets, "stagein.yaml")
     os.environ["WRAPPER_STAGE_OUT"] = os.path.join(zoo_calrissian_assets, "stageout.yaml")
 
-    #env = os.environ.copy()
-    #env["PYTHONPATH"] = (os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))+ ":" + env.get("PYTHONPATH", ""))
+    env = os.environ.copy()
+    env.setdefault("STORAGE_CLASS", "nfs-csi")
+    env.setdefault("KUBECONFIG", os.path.expanduser("~/.kube/kubeconfig-t2-dev.yaml"))
 
-    #print("PYTHONPATH being passed to subprocess:")
-    #print(env["PYTHONPATH"])
-
-    
     # 🏃 Execute main_runner with Calrissian
     result = subprocess.run(
         [
@@ -66,7 +67,7 @@ def test_calrissian_runner_invocation(tmp_path):
             "--inputs", str(inputs_path),
             "--outputs", str(outputs_path)
         ],
-        #env=env,
+        env=env,
         capture_output=True,
         text=True
     )
@@ -74,5 +75,5 @@ def test_calrissian_runner_invocation(tmp_path):
     print("STDOUT:", result.stdout)
     print("STDERR:", result.stderr)
 
-    # ✅ Assert it initializes
-    assert "Initialized calrissian runner" in result.stdout
+    # ✅ Assert it initializes (loguru logs go to stderr)
+    assert "Initialized calrissian runner" in result.stderr

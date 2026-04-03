@@ -36,32 +36,32 @@ jobs:
       - name: Checkout zoo-runner-common
         uses: actions/checkout@v4
         with:
-          repository: Aryankhare1225/zoo-runner-common
+          repository: ZOO-Project/zoo-runner-common
           path: deps/zoo-runner-common
 
       - name: Checkout zoo-template-common
         uses: actions/checkout@v4
         with:
-          repository: Aryankhare1225/zoo-template-common
+          repository: ZOO-Project/zoo-template-common
           path: deps/zoo-template-common
 
       # Check out runners (use your forks if you’ve modified them)
       - name: Checkout zoo-argowf-runner
         uses: actions/checkout@v4
         with:
-          repository: Aryankhare1225/zoo-argowf-runner
+          repository: ZOO-Project/zoo-argowf-runner
           path: deps/zoo-argowf-runner
 
       - name: Checkout zoo-wes-runner
         uses: actions/checkout@v4
         with:
-          repository: Aryankhare1225/zoo-wes-runner
+          repository: ZOO-Project/zoo-wes-runner
           path: deps/zoo-wes-runner
 
       - name: Checkout zoo-calrissian-runner
         uses: actions/checkout@v4
         with:
-          repository: Aryankhare1225/zoo-calrissian-runner
+          repository: ZOO-Project/zoo-calrissian-runner
           path: deps/zoo-calrissian-runner
 
       - name: Set up Python
@@ -81,7 +81,7 @@ jobs:
           pip install deps/zoo-wes-runner
           # Hatch projects: pip install . works
           pip install deps/zoo-argowf-runner
-          pip install deps/zoo-calrissian-runner || true  # allow failure for now (pycalrissian issues)
+          pip install deps/zoo-calrissian-runner
 
       - name: Set PYTHONPATH (fallback if some aren’t installed)
         run: |
@@ -90,5 +90,5 @@ jobs:
       - name: Install test deps
         run: pip install pytest
 
-      - name: Run integration tests (skip calrissian for now)
-        run: pytest -v -m integration -k "not calrissian"
+      - name: Run integration tests
+        run: pytest -v -m integration

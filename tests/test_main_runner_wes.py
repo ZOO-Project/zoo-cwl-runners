@@ -2,6 +2,10 @@ import os
 import json
 import subprocess
 
+import pytest
+
+pytestmark = pytest.mark.integration
+
 def test_wes_runner_invocation(tmp_path):
     # 🛠️ Set dummy WES environment vars
     env = os.environ.copy()
@@ -41,7 +45,7 @@ def test_wes_runner_invocation(tmp_path):
     # Run the main_runner.py with WES
     result = subprocess.run(
         [
-            "python3", "../main_runner.py",
+            "python3", os.path.abspath(os.path.join(os.path.dirname(__file__), "../main_runner.py")),
             "--runner", "wes",
             "--cwl", str(cwl_path),
             "--conf", str(conf_path),

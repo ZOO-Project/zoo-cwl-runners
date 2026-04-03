@@ -2,6 +2,10 @@ import os
 import json
 import subprocess
 
+import pytest
+
+pytestmark = pytest.mark.integration
+
 def test_argowf_runner_invocation(tmp_path):
     # Dummy CWL Workflow JSON
     dummy_cwl = {
